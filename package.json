@@ -1,0 +1,56 @@
+{
+  "name": "@nemoir/web-ui",
+  "version": "0.2.0",
+  "description": "React UI components and hooks for NemoIR browser workflows — model loading, workflow run, dialogs, and trace visualization.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepack": "npm run typecheck && npm test && npm run build"
+  },
+  "peerDependencies": {
+    "@nemoir/web-runtime": "^0.4.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@nemoir/web-runtime": "^0.4.0",
+    "@testing-library/jest-dom": "^6.6.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "jsdom": "^25.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
+  },
+  "keywords": [
+    "nemoir",
+    "agent",
+    "workflow",
+    "react",
+    "ui",
+    "webllm"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ]
+}
