@@ -10,6 +10,15 @@ npm install @nemoir/web-ui
 
 Requires `react` and `react-dom` (^18.0.0 or ^19.0.0) as peer dependencies, plus `@nemoir/web-runtime` for the runtime types and session factory.
 
+## Compiler references
+
+`@nemoir/web-ui` is a React UI layer for NemoIR's browser target. Canonical workflow language and target semantics live in the public compiler repo:
+
+- [DSL and IR spec](https://github.com/hkalexling/nemoir/blob/master/docs/dsl-and-ir.md)
+- [Web target guide](https://github.com/hkalexling/nemoir/blob/master/docs/targets/web.md)
+
+This package documents only the UI surface.
+
 ## API
 
 ### Hooks
