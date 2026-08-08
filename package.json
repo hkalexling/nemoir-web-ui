@@ -1,6 +1,6 @@
 {
   "name": "@nemoir/web-ui",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React UI components and hooks for NemoIR browser workflows — model loading, workflow run, dialogs, and trace visualization.",
   "license": "MIT",
   "repository": {
