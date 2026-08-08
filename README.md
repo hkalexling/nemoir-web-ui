@@ -61,6 +61,11 @@ npm run build        # tsc -p tsconfig.build.json
 npm pack --dry-run   # preview package contents
 ```
 
+## Releasing
+
+Maintainers should follow [RELEASING.md](RELEASING.md); npm publication is
+performed only by the trusted GitHub Actions workflow.
+
 ## License
 
 MIT
