@@ -57,6 +57,10 @@ function makeFakeSession(opts?: {
   loadDelayMs?: number;
   loadError?: string;
   assessment?: StorageCapacityAssessment;
+  deleteAllResult?: {
+    deletedIds: readonly string[];
+    failures: ReadonlyArray<{ modelId: string; message: string }>;
+  };
 }): WebLlmSession {
   const models = opts?.models ?? [
     fakeModelInfo({ modelId: "m1", label: "Model 1", vramRequiredMb: 512 }),
@@ -65,6 +69,7 @@ function makeFakeSession(opts?: {
   ];
 
   let loadedModelId: string | undefined;
+  let cachedIds = [...(opts?.cachedIds ?? [])];
 
   return {
     models,
@@ -73,7 +78,7 @@ function makeFakeSession(opts?: {
       return loadedModelId === modelId;
     },
     async cachedModelIds(): Promise<readonly string[]> {
-      return opts?.cachedIds ?? [];
+      return cachedIds;
     },
     async assessStorage(modelId: string): Promise<StorageCapacityAssessment> {
       const model = models.find((m) => m.modelId === modelId);
@@ -101,6 +106,15 @@ function makeFakeSession(opts?: {
       loadedModelId = _modelId;
     },
     async deleteModelArtifacts(_modelId: string): Promise<void> {},
+    async deleteAllModelArtifacts(): Promise<{
+      deletedIds: readonly string[];
+      failures: ReadonlyArray<{ modelId: string; message: string }>;
+    }> {
+      const result =
+        opts?.deleteAllResult ?? { deletedIds: [...cachedIds], failures: [] };
+      cachedIds = [];
+      return result;
+    },
     lastLoadFailure: null,
     adapter: null as unknown as WebLlmSession["adapter"],
   };
@@ -370,6 +384,44 @@ describe("useWebLlmSession", () => {
 
     // Restore.
     session.cachedModelIds = origCachedIds;
+  });
+
+  it("deleteAllCachedArtifacts sweeps the session and refreshes cachedIds", async () => {
+    const session = makeFakeSession({
+      cachedIds: ["m1", "m2"],
+      deleteAllResult: {
+        deletedIds: ["m1"],
+        failures: [{ modelId: "m2", message: "locked" }],
+      },
+    });
+    mockRuntime({ webgpu: true, coi: true, session });
+
+    const { useWebLlmSession: hookImpl } = await import(
+      "../useWebLlmSession.js"
+    );
+    const { result } = renderHook(() =>
+      hookImpl(defaultOpts()),
+    );
+
+    await waitFor(() => {
+      expect(result.current.session).not.toBeNull();
+      expect(result.current.cachedIds).toEqual(["m1", "m2"]);
+    });
+
+    let outcome:
+      | {
+          deletedIds: readonly string[];
+          failures: ReadonlyArray<{ modelId: string; message: string }>;
+        }
+      | undefined;
+    await act(async () => {
+      outcome = await result.current.deleteAllCachedArtifacts();
+    });
+
+    expect(outcome?.deletedIds).toEqual(["m1"]);
+    expect(outcome?.failures).toEqual([{ modelId: "m2", message: "locked" }]);
+    // cachedIds state refreshed after the sweep.
+    expect(result.current.cachedIds).toEqual([]);
   });
 
   it("manual dispose resets state to idle baseline", async () => {

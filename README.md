@@ -23,7 +23,7 @@ This package documents only the UI surface.
 
 ### Hooks
 
-- **`useWebLlmSession(options)`** — WebLLM session lifecycle: readiness detection (WebGPU + cross-origin isolation), model list, explicit loading, storage assessment, cache state, and disposal. Returns structured `loadFailure` for diagnostics plus recovery actions (`retryWithFreshWorker`, `retryCleanDownload`, `deleteModelArtifacts`) and optional per-model fit assessments.
+- **`useWebLlmSession(options)`** — WebLLM session lifecycle: readiness detection (WebGPU + cross-origin isolation), model list, explicit loading, storage assessment, cache state, and disposal. Returns structured `loadFailure` for diagnostics plus recovery actions (`retryWithFreshWorker`, `retryCleanDownload`, `deleteModelArtifacts`, `deleteAllCachedArtifacts`) and optional per-model fit assessments.
 - **`useWorkflowRun(runner)`** — Generic async stream runner: start, cancel, raw event capture, coalesced timeline derivation, result/error state, stale-update and unmount safety.
 - **`useWebUiHost()`** — Retrieve the `WebUiHost` from context (throws if used outside a provider).
 

@@ -104,6 +104,15 @@ export interface UseWebLlmSessionResult {
   readonly retryCleanDownload: () => Promise<void>;
   /** Delete all cached artifacts for the selected model. */
   readonly deleteModelArtifacts: () => Promise<void>;
+  /**
+   * Delete all cached model artifacts known to the session (the app's model
+   * catalog). Refreshes `cachedIds` afterwards. Resolves with the deleted
+   * ids and per-model failures (best-effort sweep).
+   */
+  readonly deleteAllCachedArtifacts: () => Promise<{
+    deletedIds: readonly string[];
+    failures: ReadonlyArray<{ modelId: string; message: string }>;
+  }>;
   /** Re-assess storage for the selected model and return the fresh result. */
   readonly assessStorageForSelected: () => Promise<StorageCapacityAssessment | null>;
   /** Dispose the session and release resources. Callable manually or on unmount. */
@@ -331,6 +340,26 @@ export function useWebLlmSession(
     }
   }, [selectedModel]);
 
+  const deleteAllCachedArtifacts = useCallback(async () => {
+    const s = sessionRef.current;
+    if (!s) return { deletedIds: [], failures: [] };
+    try {
+      const result = await s.deleteAllModelArtifacts();
+      // Refresh cached state so consumers see the empty catalog
+      // immediately after the sweep.
+      try {
+        const ids = await s.cachedModelIds();
+        if (mountedRef.current) setCachedIds(ids);
+      } catch { /* best effort */ }
+      return result;
+    } catch (e) {
+      if (mountedRef.current) {
+        setError(e instanceof Error ? e.message : String(e));
+      }
+      return { deletedIds: [], failures: [] };
+    }
+  }, []);
+
   const assessStorageForSelected = useCallback(async (): Promise<StorageCapacityAssessment | null> => {
     const s = sessionRef.current;
     if (!s || !selectedModel) return null;
@@ -393,6 +422,7 @@ export function useWebLlmSession(
     retryWithFreshWorker,
     retryCleanDownload,
     deleteModelArtifacts,
+    deleteAllCachedArtifacts,
     assessStorageForSelected,
     dispose,
   };
