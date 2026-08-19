@@ -1,6 +1,6 @@
 {
   "name": "@nemoir/web-ui",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "React UI components and hooks for NemoIR browser workflows — model loading, workflow run, dialogs, and trace visualization.",
   "license": "MIT",
   "repository": {
@@ -27,12 +27,12 @@
     "prepack": "npm run typecheck && npm test && npm run build"
   },
   "peerDependencies": {
-    "@nemoir/web-runtime": "^0.4.0",
+    "@nemoir/web-runtime": "^0.5.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@nemoir/web-runtime": "^0.4.0",
+    "@nemoir/web-runtime": "^0.5.0",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.6.1",
