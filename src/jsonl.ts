@@ -4,6 +4,11 @@
  * Framework-neutral; usable from any React component or plain script.
  * Events are serialized exactly as emitted (no field stripping) so trace
  * exports are reproducible.
+ *
+ * Compatibility note: this export is lossless and NOT safe for public
+ * sharing. It may contain prompts, inputs, tool payloads, and provider
+ * details. For portable audit traces use `.nemotrace`; the viewer imports
+ * this JSONL only as `legacy / provenance incomplete / playback only`.
  */
 
 import type { WorkflowEvent } from "@nemoir/web-runtime";

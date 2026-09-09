@@ -35,8 +35,8 @@ This package documents only the UI surface.
 
 ### Helpers
 
-- **`eventsToJsonl(events)`** — Serialize `WorkflowEvent[]` to a JSONL string.
-- **`downloadJsonl(events, filename)`** — Trigger a browser download of a JSONL file.
+- **`eventsToJsonl(events)`** — Serialize `WorkflowEvent[]` to a JSONL string. Lossless and **not safe for public sharing**; the trace viewer imports it only as legacy / provenance-incomplete / playback-only.
+- **`downloadJsonl(events, filename)`** — Trigger a browser download of a JSONL file. Same warning: local inspection only, never a publication artifact.
 - **`coalesceTimeline(events)`** — Merge consecutive `model_delta` events (same stage + channel) into display-friendly `delta_run` items.
 
 ### Re-exported helpers (from `@nemoir/web-runtime`)
